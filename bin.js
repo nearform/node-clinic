@@ -417,6 +417,27 @@ async function runTool (toolName, Tool, version, args, uiOptions) {
     console.log(`Output file is ${outputs.data}`)
   }
 
+  if (Tool.name === 'ClinicDoctor' && !args['collect-only'] && !args['visualize-only']) {
+    const iss = tool.issue
+
+    const argsArr = args['--']
+    argsArr.shift()
+    const proc = argsArr.join(' ')
+
+    if (iss !== 'none' && iss !== undefined) {
+      console.log(`Doctor detected a potential ${iss} issue.`)
+    }
+    if (iss === 'event-loop') {
+      console.log('To get started with diagnosing the issue run:')
+      console.log(`clinic flame --autocannon [ / ] -- node ${proc}`)
+    } else if (iss === 'io') {
+      console.log('To get started with diagnosing the issue run:')
+      console.log(`clinic bubbleprof --autocannon [ / ] -- node ${proc}`)
+    } else if (iss === 'data') {
+      console.log('Try running the benchmark for a longer time.')
+    }
+  }
+
   // rest is util functions
 
   function viz (toolName, filename, cb) {
